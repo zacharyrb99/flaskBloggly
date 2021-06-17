@@ -6,3 +6,16 @@
     width:100px;
     height:100px;
 }
+
+.post-form{
+    border: 2px lightgrey solid;
+    border-radius: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+}
+
+.user-form{
+    border: 2px lightgrey solid;
+    border-radius: 15px;
+}

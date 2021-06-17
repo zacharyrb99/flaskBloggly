@@ -1,6 +1,6 @@
 from unittest import TestCase
 from app import app
-from models import db, User
+from models import db, User, Post
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///bloggly_test'
 app.config['SQLALCHEMY_ECHO'] = False
@@ -60,3 +60,42 @@ class UserViewsTestCase(TestCase):
             response = client.post(f'/users/{self.user_id}/delete')
             self.assertEqual(response.status_code, 302)
             self.assertEqual(User.query.count(), 0)
+
+class PostViewsTestCase(TestCase):
+    def setUp(self):
+        User.query.delete()
+        Post.query.delete()
+        
+        user = User(first_name='Zach', last_name='Boudreaux')
+        db.session.add(user)
+        db.session.commit()
+
+        post = Post(title='TestPost', content='Hello')
+        db.session.add(post)
+        db.session.commit()
+
+        self.user_id = user.id
+        self.post_id = post.id
+
+    def tearDown(self):
+        db.session.rollback()
+
+    def test_post(self):
+        with app.test_client() as client:
+            response = client.get(f'/users/{self.user_id}/posts/{self.post_id}')
+            html = response.get_data(as_text=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('<h1>TestPost</h1>', html)
+
+    def test_edit_post(self):
+        with app.test_client() as client:
+            response = client.get(f'/users/{self.user_id}/posts/{self.post_id}/edit')
+            html = response.get_data(as_text=True)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('<h1>Edit post for Zach Boudreaux</h1>', html)
+    
+    def test_delete_post(self):
+        with app.test_client() as client:
+            response = client.post(f'/users/{self.user_id}/posts/{self.post_id}/delete')
+            self.assertEqual(response.status_code, 302)
+            self.assertEqual(Post.query.count(), 0)

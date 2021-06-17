@@ -15,9 +15,24 @@
         <form action = '/users/{{user.id}}/delete' method = 'POST'>
             <button class = 'btn btn-danger'>Delete User</button>
         </form>
+
+        <form action = '/'>
+            <button class = 'btn btn-warning'>HOME</button>
+        </form>
     </div>
-        
-    <form action = '/'>
-        <button class = 'btn btn-warning'>HOME</button>
-    </form>
+
+    <div>
+        <h3>Posts:</h3>
+        <ul>
+            {% for post in posts %}
+                <li>
+                    <a href='/users/{{user.id}}/posts/{{post.id}}'>{{post.title}}</a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <form action='/users/{{user.id}}/posts/new'>
+            <button class = 'btn btn-primary'>Add Post</button>
+        </form>
+    </div>
 {% endblock %}

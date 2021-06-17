@@ -1,7 +1,7 @@
 """Bloggly application."""
 from flask import Flask, request, render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User
+from models import db, connect_db, User, Post
 
 app = Flask(__name__)
 
@@ -43,15 +43,16 @@ def add_user():
 @app.route('/users/<int:user_id>')
 def user_details(user_id):
     user = User.query.get_or_404(user_id)
-    return render_template('details.html', user=user)
+    posts = Post.query.filter_by(user_id=user_id).all()
+    return render_template('details.html', user=user, posts=posts)
 
 @app.route('/users/<int:user_id>/edit')
 def edit_user(user_id):
     user = User.query.get(user_id)
-    return render_template('edit.html', user=user)
+    return render_template('user_edit.html', user=user)
 
 @app.route('/users/<int:user_id>/edit', methods=['POST'])
-def submit_edit(user_id):
+def submit_edit_user(user_id):
     user = User.query.get(user_id)
     fname = request.form['first']
     lname = request.form['last']
@@ -64,9 +65,53 @@ def submit_edit(user_id):
 
     return redirect(f'/users/{user.id}')
 
-
 @app.route('/users/<int:user_id>/delete', methods=['POST'])
 def delete_user(user_id):
     User.query.filter_by(id=user_id).delete()
     db.session.commit()
     return redirect('/')
+
+@app.route('/users/<int:user_id>/posts/<int:post_id>')
+def show_posts(user_id, post_id):
+    user = User.query.get(user_id)
+    post = Post.query.get(post_id)
+    return render_template('posts.html', user=user, post=post)
+
+@app.route('/users/<int:user_id>/posts/new')
+def new_post(user_id):
+    user = User.query.get_or_404(user_id) 
+    return render_template('post_form.html', user=user)
+
+@app.route('/users/<int:user_id>/posts/new', methods=['POST'])
+def add_new_post(user_id):
+    title = request.form['title']
+    content = request.form['content']
+    new_post = Post(title=title, content=content, user_id=user_id)
+    db.session.add(new_post)
+    db.session.commit()
+    return redirect(f'/users/{user_id}/posts/{new_post.id}')
+
+@app.route('/users/<int:user_id>/posts/<int:post_id>/edit')
+def edit_post(user_id, post_id):
+    user = User.query.get(user_id)
+    post = Post.query.get(post_id)
+    
+    return render_template('post_edit.html', user=user, post=post)
+
+@app.route('/users/<int:user_id>/posts/<int:post_id>/edit', methods=['POST'])
+def submit_edit_post(user_id, post_id):
+    post = Post.query.get(post_id)
+    title = request.form['title']
+    content = request.form['content']
+
+    post.title = title
+    post.content = content
+    db.session.commit()
+
+    return redirect(f'/users/{user_id}/posts/{post_id}')
+
+@app.route('/users/<int:user_id>/posts/<int:post_id>/delete', methods=['POST'])
+def delete_post(user_id, post_id):
+    Post.query.filter_by(id=post_id).delete()
+    db.session.commit()
+    return redirect(f'/users/{user_id}')

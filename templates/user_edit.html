@@ -4,7 +4,7 @@
 
 {% block content %}
     <h1>Edit a User</h1>
-    <form action = '/users/{{user.id}}/edit' method = 'POST' class = 'col-6'>
+    <form action = '/users/{{user.id}}/edit' method = 'POST' class = 'col-6 user-form'>
         <div class = 'mb-3'>
             <label for = 'first' class = 'form-label'>First Name</label>
             <input name = 'first' placeholder = 'First Name' class = 'form-control' value = '{{user.first_name}}'>

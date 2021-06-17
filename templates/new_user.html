@@ -4,7 +4,7 @@
 
 {% block content %}
     <h1>Create a User</h1>
-    <form action = '/users/new' method = 'POST' class = 'col-6'>
+    <form action = '/users/new' method = 'POST' class = 'col-6 user-form'>
         <div class = 'mb-3'>
             <label for = 'first' class = 'form-label'>First Name</label>
             <input name = 'first' placeholder = 'First Name' class = 'form-control'>
@@ -22,11 +22,8 @@
 
         <div class = 'mb-3'>
             <button class = 'btn btn-success'>Create User</button>
+            <button type='submit' formmethod='get' formaction='/' class = 'btn btn-warning'>HOME</button>
         </div>
-    </form>
-
-    <form action = '/'>
-        <button class = 'btn btn-warning'>HOME</button>
     </form>
 {% endblock %}
 

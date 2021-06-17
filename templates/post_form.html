@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}New Post{% endblock %}
+
+{% block content %}
+    <h1>Add post for {{user.get_full_name()}}</h1>
+    <form action='/users/{{user.id}}/posts/new' method='POST' class='post-form'>
+        <div class="mb-3">
+            <label for='title' class='form-label'>Title</label>
+            <input type='text' class='form-control' name='title'>
+        </div>
+        <div class="mb-3">
+            <label for='content' class='form-label'>Content</label>
+            <textarea type='text' class='form-control' name='content' rows='3'></textarea>
+        </div>
+        <button type='submit' formaction='/users/{{user.id}}' formmethod='get' class='btn btn-outline-danger'>Cancel</button>
+        <button class='btn btn-success'>Submit Post</button>
+    </form>
+{% endblock %}
