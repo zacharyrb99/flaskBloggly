@@ -67,9 +67,10 @@ def submit_edit_user(user_id):
 
 @app.route('/users/<int:user_id>/delete', methods=['POST'])
 def delete_user(user_id):
-    User.query.filter_by(id=user_id).delete()
+    user = User.query.get(user_id)
+    db.session.delete(user)
     db.session.commit()
-    return redirect('/')
+    return redirect('/users')
 
 ####POSTS ROUTES####
 @app.route('/users/<int:user_id>/posts/<int:post_id>')
@@ -132,7 +133,8 @@ def submit_edit_post(user_id, post_id):
 
 @app.route('/users/<int:user_id>/posts/<int:post_id>/delete', methods=['POST'])
 def delete_post(user_id, post_id):
-    Post.query.filter_by(id=post_id).delete()
+    post = Post.query.get(post_id)
+    db.session.delete(post)
     db.session.commit()
     return redirect(f'/users/{user_id}')
 
@@ -176,6 +178,7 @@ def submit_edit_tag(tag_id):
 
 @app.route('/tags/<int:tag_id>/delete')
 def delete_tag(tag_id):
-    Tag.query.filter_by(id=tag_id).delete()
+    tag = Tag.query.get(tag_id)
+    db.session.delete(tag)
     db.session.commit()
     return redirect('/tags')

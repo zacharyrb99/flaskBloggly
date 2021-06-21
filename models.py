@@ -19,6 +19,8 @@ class User(db.Model):
     last_name = db.Column(db.Text, nullable = False)
     image_url = db.Column(db.Text, default = DEFAULT_IMG)
 
+    posts = db.relationship('Post', backref='user', cascade='all, delete-orphan')
+
     def get_full_name(self):
         return f'{self.first_name} {self.last_name}'
 
@@ -31,7 +33,7 @@ class Post(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-    user = db.relationship('User', backref='posts')
+    # user = db.relationship('User', backref='posts', cascade='all, delete-orphan')
 
 class Tag(db.Model):
     __tablename__ = 'tags'
